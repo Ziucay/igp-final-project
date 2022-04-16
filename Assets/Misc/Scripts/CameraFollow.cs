@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
@@ -12,6 +13,14 @@ public class CameraFollow : MonoBehaviour
         Vector3 initialPosition = transform.position;
         _offset = initialPosition - FollowTarget.position;
         _fixedY = initialPosition.y;
+    }
+
+    private void Start()
+    {
+        if (FollowTarget == null)
+        {
+            FollowTarget = GameObject.FindGameObjectsWithTag("Player")[0].transform;
+        }
     }
 
     private void LateUpdate()

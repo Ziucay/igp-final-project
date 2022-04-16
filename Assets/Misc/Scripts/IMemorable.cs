@@ -2,8 +2,8 @@ using UnityEngine;
 
 public interface IMemorable
 {
-    public ScriptableObject SaveToMemento();
+    public ISerializable SaveToMemento();
 
-    public void RestoreFromMemento(ScriptableObject memento);
+    public void RestoreFromMemento(ISerializable memento);
 
 }

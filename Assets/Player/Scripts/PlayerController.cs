@@ -1,6 +1,7 @@
+using System.Linq;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IMemorable
 {
     public float Speed;
     public float RotationSpeed;
@@ -39,6 +40,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+
         float horizontal = Joystick.Horizontal;
         float vertical = Joystick.Vertical;
         Vector3 smoothDirection = new Vector3(horizontal, 0, vertical);
@@ -54,5 +56,19 @@ public class PlayerController : MonoBehaviour
             _rb.rotation = Quaternion.LookRotation(currentRotation);
         
         _rb.velocity = smoothDirection * Speed;
+    }
+
+    public ISerializable SaveToMemento()
+    {
+        var obj = new PlayerScriptableObject(transform.position);
+        return obj;
+    }
+
+    public void RestoreFromMemento(ISerializable memento)
+    {
+        if (memento.GetType() != typeof(PlayerScriptableObject))
+            throw new System.ArgumentException("Incorrect type of Scriptable object");
+
+        transform.position = ((PlayerScriptableObject) memento).ToVector();
     }
 }

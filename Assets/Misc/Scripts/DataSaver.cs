@@ -16,7 +16,6 @@ public class DataSaver : MonoBehaviour
         Debug.Log(Application.persistentDataPath);
         if (!File.Exists(Application.persistentDataPath + "/gamesave.save"))
         {
-            Debug.Log("It goes in save");
             SaveState();
             SaveGame();
         }
@@ -45,12 +44,43 @@ public class DataSaver : MonoBehaviour
             Debug.Log("Nothing to be loaded.");
             return;
         }
+        List<KeyValuePair<string, GameObject>> list = new List<KeyValuePair<string, GameObject>>();
+        
+        var objects = FindObjectsOfType<MonoBehaviour>().OfType<IMemorable>();
+        foreach (var obj in objects)
+        {
+            list.Add(new KeyValuePair<string, GameObject>((obj as MonoBehaviour).gameObject.tag, 
+                                                                (obj as MonoBehaviour).gameObject));
+        }
 
         foreach (var memento in _mementoObjects)
         {
-            GameObject current = GameObject.FindGameObjectWithTag(memento.Item1);
-            current.GetComponent<IMemorable>().RestoreFromMemento(memento.Item2);
+            GameObject current = GetGameObjectFromList(memento.Item1, list);
+            if (current != null)
+                current.GetComponent<IMemorable>().RestoreFromMemento(memento.Item2);
         }
+    }
+
+    private GameObject GetGameObjectFromList(string tag, List<KeyValuePair<string, GameObject>> list)
+    {
+        GameObject result = null;
+        
+        foreach (var entry in list)
+        {
+            if (entry.Key == tag)
+            {
+                result = entry.Value;
+                list.Remove(entry);
+                break;
+            }
+        }
+
+        if (result == null)
+        {
+            Debug.Log("Object with such tag not found");
+        }
+
+        return result;
     }
 
     private void SaveGame()

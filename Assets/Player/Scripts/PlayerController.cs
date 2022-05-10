@@ -60,15 +60,15 @@ public class PlayerController : MonoBehaviour, IMemorable
 
     public ISerializable SaveToMemento()
     {
-        var obj = new PlayerScriptableObject(transform.position);
+        var obj = new PlayerMemento(transform.position);
         return obj;
     }
 
     public void RestoreFromMemento(ISerializable memento)
     {
-        if (memento.GetType() != typeof(PlayerScriptableObject))
-            throw new System.ArgumentException("Incorrect type of Scriptable object");
+        if (memento.GetType() != typeof(PlayerMemento))
+            throw new System.ArgumentException("Incorrect type of memento object");
 
-        transform.position = ((PlayerScriptableObject) memento).ToVector();
+        transform.position = ((PlayerMemento) memento).ToVector();
     }
 }

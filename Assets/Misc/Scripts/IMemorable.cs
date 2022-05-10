@@ -7,3 +7,7 @@ public interface IMemorable
     public void RestoreFromMemento(ISerializable memento);
 
 }
+
+
+
+
